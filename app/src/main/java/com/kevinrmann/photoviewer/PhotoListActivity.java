@@ -37,7 +37,7 @@ public class PhotoListActivity extends AppCompatActivity {
                 MediaStore.Images.Thumbnails.DATA
         };
         // Create the cursor pointing to the SDCard
-        cursor = managedQuery( MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+        cursor = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
                 projection, // Which columns to return
                 null,       // Return all rows
                 null,
@@ -55,7 +55,7 @@ public class PhotoListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 // Get the data location of the image
                 String[] projection = {MediaStore.Images.Media.DATA};
-                cursor = managedQuery( MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                cursor = getContentResolver().query( MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         projection, // Which columns to return
                         null,       // Return all rows
                         null,
