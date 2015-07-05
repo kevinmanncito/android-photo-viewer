@@ -3,6 +3,8 @@ package com.kevinrmann.photoviewer;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -18,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 public class PhotoListActivity extends AppCompatActivity {
 
@@ -37,15 +41,15 @@ public class PhotoListActivity extends AppCompatActivity {
                 MediaStore.Images.Thumbnails.DATA
         };
         // Create the cursor pointing to the SDCard
-        cursor = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+        cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection, // Which columns to return
                 null,       // Return all rows
                 null,
-                MediaStore.Images.Thumbnails.IMAGE_ID);
+                null);
         int imageCount = cursor.getCount();
         setTitle("Images: "+imageCount);
         // Get the column index of the Thumbnails Image ID
-        columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
+        columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
 
         GridView sdcardImages = (GridView) findViewById(R.id.imagesGridView);
         sdcardImages.setAdapter(new ImageAdapter(this));
@@ -55,7 +59,7 @@ public class PhotoListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 // Get the data location of the image
                 String[] projection = {MediaStore.Images.Media.DATA};
-                cursor = getContentResolver().query( MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         projection, // Which columns to return
                         null,       // Return all rows
                         null,
@@ -133,9 +137,12 @@ public class PhotoListActivity extends AppCompatActivity {
             holder.img=(ImageView) rowView.findViewById(R.id.imageThumbnail);
 
             cursor.moveToPosition(position);
-            int imageID = cursor.getInt(columnIndex);
-            holder.img.setImageURI(Uri.withAppendedPath(
-                    MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, "" + imageID));
+            String imagePath = cursor.getString(columnIndex);
+            File imageFile = new File(imagePath);
+            if(imageFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                holder.img.setImageBitmap(myBitmap);
+            }
             holder.img.setScaleType(ImageView.ScaleType.FIT_CENTER);
             holder.img.setPadding(2, 2, 2, 2);
 

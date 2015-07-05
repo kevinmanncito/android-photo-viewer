@@ -24,7 +24,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String imagePath = intent.getStringExtra(PhotoListActivity.IMAGE_PATH);
-        String fileName=imagePath.substring(imagePath.lastIndexOf("/")+1);
+        String fileName = imagePath.substring(imagePath.lastIndexOf("/")+1);
         setTitle(fileName);
         imageView = (ImageView)findViewById(R.id.fullScreenImage);
         File imageFile = new File(imagePath);
